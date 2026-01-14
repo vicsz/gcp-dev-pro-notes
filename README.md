@@ -657,33 +657,91 @@ Use these rules aggressively:
 | AWS | GCP | Exam-Relevant Notes |
 |---|---|---|
 | API Gateway | API Gateway | OpenAPI-driven, simpler and more opinionated than AWS. |
-| ALB / NLB / Global Accelerator | Cloud Load Balancing | **Single global load balancing system**, not multiple distinct services. |
+| API Gateway (Advanced) | Apigee | Full API management platform (enterprise features). |
+| API Gateway (Legacy) | Cloud Endpoints | Older API management solution; recognize but rarely prefer. |
+| ALB / NLB / Global Accelerator | Cloud Load Balancing | Single global load balancing system, not multiple distinct services. |
 | Step Functions | Workflows | YAML-based service orchestration. Frequently tested. |
 
 ---
 
-### API Gateway (Medium Exam Weight)
+## API Gateway (Medium Exam Weight)
 
-**GCP API Gateway characteristics**
+### GCP API Gateway characteristics
 - OpenAPI specification–driven
-- Used to expose REST APIs
-- Integrates with Cloud Run, Cloud Functions, and GKE
-- Handles auth, quotas, and routing
+- Used to expose REST and gRPC APIs
+- Integrates with:
+  - Cloud Run
+  - Cloud Functions
+  - GKE
+- Handles:
+  - Authentication
+  - Quotas
+  - Basic routing
 
-**How this differs from AWS**
+### How this differs from AWS
 - Fewer feature variants
 - Less emphasis on request/response transformation
+- Not a full API management suite
 - Often paired with Cloud Run
 
-**Exam takeaway**
-> If the question mentions OpenAPI, REST exposure, or API management → **API Gateway**
+### Exam takeaway
+> If the question mentions **OpenAPI**, **REST/gRPC exposure**, or **simple API management** → **API Gateway**
 
 ---
 
-### Cloud Load Balancing (High Exam Weight)
+## Apigee (Medium Exam Weight, Situational)
 
-**Key difference vs AWS**
-> **GCP does NOT split load balancing into ALB / NLB / Global Accelerator equivalents.**  
+### Apigee characteristics
+- Full **API management platform**
+- Designed for **external-facing, enterprise APIs**
+- Provides:
+  - OAuth flows
+  - API keys
+  - Rate limiting
+  - Quotas
+  - Analytics
+  - Monetization (recognize only)
+
+### AWS mental model
+- Closest to **AWS API Gateway (advanced) + usage plans + analytics**
+
+### When Apigee is the correct answer
+- “Enterprise API management”
+- “Developer portal”
+- “API analytics”
+- “OAuth enforcement”
+- “Rate limiting across consumers”
+- “Expose APIs to partners or third parties”
+
+### Exam takeaway
+> **API Gateway = expose APIs**  
+> **Apigee = manage APIs as a product**
+
+---
+
+## Cloud Endpoints (Low Exam Weight, Recognition Only)
+
+### Cloud Endpoints characteristics
+- Older API management solution
+- OpenAPI or gRPC-based
+- Superseded by API Gateway for most use cases
+
+### Exam reality
+- Appears mostly in:
+  - Legacy scenarios
+  - Backward compatibility wording
+- Rarely the *best* answer for new designs
+
+### Exam takeaway
+> New designs → **API Gateway or Apigee**  
+> Cloud Endpoints → **recognize, don’t choose unless forced**
+
+---
+
+## Cloud Load Balancing (High Exam Weight)
+
+### Key difference vs AWS
+> GCP does **NOT** split load balancing into ALB / NLB / Global Accelerator equivalents.  
 > Cloud Load Balancing is a **single, unified global service** with multiple modes.
 
 ---
@@ -696,7 +754,7 @@ Use these rules aggressively:
 | NLB (TCP/UDP) | TCP/UDP Load Balancer | Used for non-HTTP traffic. |
 | Global Accelerator | Built-in | Global anycast IPs are standard. |
 
-**Exam-critical distinctions**
+### Exam-critical distinctions
 - Global HTTP(S) LB is **default**, not special
 - SSL termination is assumed
 - Works natively with:
@@ -704,41 +762,52 @@ Use these rules aggressively:
   - GKE
   - Compute Engine
 
----
-
-### Cloud Load Balancing vs AWS ELB Family (Exam Trap)
-
-**AWS instinct**
-- Choose ALB vs NLB vs GA carefully
-
-**GCP exam reality**
-- You choose **traffic type**, not a product
-- Global vs regional is usually implicit
-- HTTP(S) is assumed unless stated otherwise
-
-**Exam takeaway**
+### Exam takeaway
 > Do NOT overthink load balancer selection — Cloud Load Balancing “just works” globally
 
 ---
 
-### Workflows (High Exam Weight)
+## Workflows (High Exam Weight)
 
-**Workflows characteristics**
+### Workflows characteristics
 - YAML-based orchestration
 - Coordinates calls to services and APIs
 - Deterministic, ordered execution
-- Native auth via service accounts
+- Native authentication via service accounts
 
-**Workflows replaces in AWS terms**
+### Workflows replaces (AWS mental model)
 - Step Functions (Standard)
 
-**Common exam use cases**
+### Common exam use cases
 - Calling multiple Cloud Run services
 - Orchestrating API calls
 - Coordinating retries and branching logic
 
-**Exam takeaway**
+### Exam takeaway
 > Multi-step logic with service calls → **Workflows**
+
+---
+
+## API & Integration Selection Heuristics (Exam-Critical)
+
+Use these aggressively:
+
+- **Expose simple REST/gRPC API** → API Gateway
+- **Enterprise API management** → Apigee
+- **Legacy API management** → Cloud Endpoints (only if stated)
+- **Traffic routing / SSL / global access** → Cloud Load Balancing
+- **Multi-step service orchestration** → Workflows
+- **Event delivery** → Pub/Sub
+- **Platform events** → Eventarc
+
+---
+
+### One-Line Exam Mantra
+
+> **API Gateway exposes APIs.  
+> Apigee manages APIs.  
+> Cloud Load Balancing moves traffic.  
+> Workflows orchestrates logic.**
 
 ---
 
