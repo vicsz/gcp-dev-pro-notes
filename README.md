@@ -1262,19 +1262,168 @@ Use these rules aggressively:
 
 ---
 
-## Key Exam Heuristics (Expanded)
+## Question Wording Patterns (Very High Yield)
 
-- **Cloud Run is the default answer** for containerized workloads.
-- **Firestore beats Cloud SQL** unless relational constraints are explicit.
-- **Spanner beats everything** for global consistency.
-- **Pub/Sub underpins almost all async designs**.
-- **Eventarc is preferred for platform and audit events**.
-- **Service Accounts + Workload Identity** over keys or secrets.
-- **Global load balancing is assumed**, not a design choice.
-- **Opinionated managed services beat configurable ones**.
-- **Kubernetes is never the default** without a strong justification.
-- **Structured logging is expected**, not optional.
-- **Cost-optimized storage tiers are frequently tested**.
-- If two answers work, **pick the one with less operational responsibility**.
+Google exam questions almost always **telegraph the correct service choice** using a small number of adjectives or constraints.  
+Missing or ignoring a single word is the most common failure mode for AWS-experienced candidates.
+
+Train yourself to **scan for these words first**, then choose the service that matches them *before* reading the options.
 
 ---
+
+### Operational Burden Signals (Extremely High Yield)
+
+| Wording in Question | What Google Wants | Typical Correct Choice |
+|---|---|---|
+| “Minimal operational overhead” | Fully managed | Cloud Run / Firestore / BigQuery |
+| “No infrastructure management” | Serverless | Cloud Run |
+| “Avoid managing servers” | Serverless | Cloud Run |
+| “Simplest solution” | Opinionated managed service | Cloud Run / Pub/Sub |
+
+**AWS trap**
+- Choosing configurable services (GKE, Cloud SQL, Compute Engine)
+
+---
+
+### Scale and Growth Signals
+
+| Wording in Question | What It Implies | Typical Correct Choice |
+|---|---|---|
+| “Automatically scales” | No capacity planning | Cloud Run / Firestore |
+| “Unpredictable traffic” | Scale-to-zero + burst | Cloud Run |
+| “High throughput” | Managed backend | Pub/Sub / Firestore |
+| “Millions of requests” | Horizontal scaling | Firestore / Cloud Run |
+
+**AWS trap**
+- Thinking in ASGs or provisioned throughput
+
+---
+
+### Global and Consistency Signals (Critical)
+
+| Wording in Question | What It Implies | Typical Correct Choice |
+|---|---|---|
+| “Global users” | Multi-region | Cloud Load Balancing |
+| “Global consistency” | Strong consistency across regions | Spanner |
+| “Multi-region writes” | Distributed relational DB | Spanner |
+| “Low-latency worldwide” | Anycast networking | Cloud Load Balancing |
+
+**AWS trap**
+- Treating global as “replication + caching”
+
+---
+
+### Data Type Signals (Very High Yield)
+
+| Wording in Question | What It Implies | Typical Correct Choice |
+|---|---|---|
+| “Application data” | OLTP | Firestore / Cloud SQL |
+| “User profiles” | Document store | Firestore |
+| “Analytics” | OLAP | BigQuery |
+| “Reporting” | Query-heavy reads | BigQuery |
+| “Streaming data” | Continuous processing | Dataflow |
+| “Events” | Messaging | Pub/Sub |
+
+**AWS trap**
+- Using BigQuery or analytics tools for application reads
+
+---
+
+### Time and Execution Signals
+
+| Wording in Question | What It Implies | Typical Correct Choice |
+|---|---|---|
+| “Long-running request” | > Lambda limits | Cloud Run |
+| “Background processing” | Async | Pub/Sub |
+| “Event-driven” | Reactive | Pub/Sub / Eventarc |
+| “Workflow” | Ordered steps | Workflows |
+
+**AWS trap**
+- Rejecting Cloud Run due to runtime length
+
+---
+
+### Security and Identity Signals (Extremely High Yield)
+
+| Wording in Question | What It Implies | Typical Correct Choice |
+|---|---|---|
+| “Avoid storing credentials” | No static secrets | Workload Identity |
+| “Least privilege” | Narrow IAM | Service Accounts |
+| “Secure service-to-service” | Identity-based access | Service Accounts |
+| “Compliance” | Key ownership | Cloud KMS (CMEK) |
+
+**AWS trap**
+- Reaching for network controls or secrets first
+
+---
+
+### Cost Optimization Signals
+
+| Wording in Question | What It Implies | Typical Correct Choice |
+|---|---|---|
+| “Cost-effective” | Managed + scale-to-zero | Cloud Run |
+| “Infrequent access” | Cold storage | Nearline / Coldline |
+| “Long-term retention” | Archival | Archive |
+| “Idle most of the time” | Serverless | Cloud Run |
+
+**AWS trap**
+- Always-on resources (VMs, clusters)
+
+---
+
+### Integration and Architecture Signals
+
+| Wording in Question | What It Implies | Typical Correct Choice |
+|---|---|---|
+| “Decoupled” | Async messaging | Pub/Sub |
+| “Fan-out” | One-to-many | Pub/Sub |
+| “Multi-step process” | Orchestration | Workflows |
+| “Platform event” | System-triggered | Eventarc |
+
+**AWS trap**
+- Using Pub/Sub for orchestration logic
+
+---
+
+### Migration Signals (Sneaky but Testable)
+
+| Wording in Question | What It Implies | Typical Correct Choice |
+|---|---|---|
+| “Existing workload” | Lift-and-shift | Compute Engine / Dataproc |
+| “Minimal code changes” | Same runtime | Compute Engine / Cloud SQL |
+| “Legacy system” | VM-based | Compute Engine |
+
+**Exam tip**
+> Migration language often overrides “modern” instincts
+
+---
+
+## Meta-Pattern: How to Read the Question
+
+1. **Scan for adjectives first**
+2. Highlight:
+   - minimal
+   - global
+   - scalable
+   - event-driven
+   - secure
+   - cost-effective
+3. Decide the service **before** reading answers
+4. Eliminate options that:
+   - add infrastructure
+   - require credentials
+   - increase operational burden
+
+---
+
+## Final Exam Rule of Thumb
+
+> **If Google gives you a word, they expect you to act on it.  
+> Ignoring adjectives is how AWS experts fail this exam.**
+
+---
+
+### One-Line Exam Mantra
+
+> **Adjectives choose the service.  
+> Nouns just describe the workload.**
