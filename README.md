@@ -184,10 +184,12 @@ Use these aggressively:
 |---|---|---|
 | DynamoDB | Firestore | **Primary application datastore**. Document-based, strongly consistent, auto-scaling, minimal ops. |
 | DynamoDB Global Tables | Firestore (multi-region) | Firestore supports multi-region replication natively. |
-| Aurora / RDS | Cloud SQL | Managed relational DB, but **scaling limits and regional scope are emphasized**. |
+| Aurora / RDS | Cloud SQL | Managed relational DB, but scaling limits and **regional scope** are emphasized. |
+| Aurora (Postgres-compatible, high performance) | AlloyDB | PostgreSQL-compatible, high-performance relational DB. **Regional**, not global. |
 | Aurora Global | Spanner | **Very important**. Global, strongly consistent, horizontally scalable relational DB. |
 | ElastiCache | Memorystore | Redis-based caching. Simple and mostly equivalent. |
-| Redshift | BigQuery | BigQuery is serverless, SQL-first, analytics-oriented. |
+| Redshift | BigQuery | Serverless, SQL-first analytics. **Not OLTP**. |
+| DynamoDB (extreme scale) / Cassandra | Bigtable | Wide-column NoSQL for **very high throughput / time-series** workloads. |
 | Neptune | No direct equivalent | Graph use cases are rare; usually a distractor. |
 
 ---
