@@ -1102,18 +1102,143 @@ Use these rules aggressively:
 > Keys never.  
 > Service accounts everywhere.**
 
----
-
 ## Observability
 
 | AWS | GCP | Exam-Relevant Notes |
 |---|---|---|
-| CloudWatch | Cloud Monitoring | Metrics, alerts, SLOs emphasized. |
+| CloudWatch | Cloud Monitoring | Metrics, alerts, and **SLOs** are emphasized. |
 | CloudWatch Logs | Cloud Logging | **Structured logging (JSON) is important**. |
-| X-Ray | Cloud Trace | Appears conceptually (latency, tracing). |
+| X-Ray | Cloud Trace | Appears conceptually (latency, request tracing). |
 
-**Exam tip**  
-> Logs are expected to be structured and queryable
+---
+
+### Cloud Monitoring (High Exam Weight)
+
+**Cloud Monitoring characteristics**
+- Metrics collection
+- Alerting
+- Dashboards
+- **Service Level Objectives (SLOs)** and error budgets
+
+**Exam framing**
+- Focuses on *outcomes* (latency, availability)
+- Ties directly to reliability goals
+
+**Exam takeaway**
+> Reliability is measured via **SLOs**, not just alarms
+
+---
+
+### SLOs and Error Budgets (Exam-Critical Concept)
+
+**SLO concepts**
+- SLI: what you measure (latency, availability)
+- SLO: target reliability (e.g., 99.9%)
+- Error budget: allowable failure
+
+**Exam trap**
+> Monitoring only CPU or memory
+
+**Correct choice**
+> Monitoring user-facing metrics and defining SLOs
+
+---
+
+### Cloud Logging (Very High Exam Weight)
+
+**Cloud Logging characteristics**
+- Centralized log storage
+- Native support for **structured logs**
+- Logs are indexed and queryable
+
+**Structured logging expectations**
+- JSON format
+- Severity field
+- Key-value pairs
+
+**Exam takeaway**
+> Logs are data, not text blobs
+
+---
+
+### Cloud Logging vs Cloud Monitoring (Exam Distinction)
+
+| Concern | Correct Service |
+|---|---|
+| Metrics & alerts | Cloud Monitoring |
+| Logs & log queries | Cloud Logging |
+| Reliability targets | Cloud Monitoring (SLOs) |
+
+---
+
+### Cloud Trace (Medium Exam Weight)
+
+**Cloud Trace characteristics**
+- Distributed tracing
+- Latency analysis
+- Request flow visualization
+
+**Exam framing**
+- Used to diagnose performance bottlenecks
+- Usually paired with Cloud Run or APIs
+
+**Exam takeaway**
+> Latency or request flow issues → Cloud Trace
+
+---
+
+### Correlation and Context (Exam-Relevant)
+
+**Observability on GCP assumes**
+- Logs include request IDs
+- Metrics correlate to services
+- Traces link requests across services
+
+**AWS trap**
+> Treating logs, metrics, and traces as separate silos
+
+**Correct approach**
+> Correlated observability signals
+
+---
+
+## Observability Selection Heuristics (Exam-Critical)
+
+Use these rules aggressively:
+
+- **Reliability targets** → Cloud Monitoring + SLOs
+- **Application logs** → Cloud Logging
+- **Query logs** → Structured JSON logs
+- **Latency diagnosis** → Cloud Trace
+- **User experience monitoring** → SLIs and SLOs
+
+---
+
+## Common AWS → GCP Exam Traps (With Correct Choices)
+
+- **Using unstructured log strings**  
+  **Why this is wrong:** Logs must be queryable and indexable.  
+  **Correct choice:** **Structured JSON logs**.
+
+- **Alerting on infrastructure metrics only**  
+  **Why this is wrong:** The exam emphasizes user-facing reliability.  
+  **Correct choice:** **SLO-based alerts**.
+
+- **Ignoring trace data when diagnosing latency**  
+  **Why this is wrong:** Logs alone don’t show request flow.  
+  **Correct choice:** **Cloud Trace**.
+
+- **Treating monitoring as optional**  
+  **Why this is wrong:** Observability is part of application design.  
+  **Correct choice:** **Monitoring + Logging by default**.
+
+---
+
+### One-Line Exam Mantra
+
+> **Metrics define reliability.  
+> Logs explain behavior.  
+> Traces explain latency.**
 
 ---
 
