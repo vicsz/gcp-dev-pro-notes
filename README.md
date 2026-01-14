@@ -42,20 +42,164 @@ This document maps AWS services to their GCP equivalents **only where relevant t
 | EFS | Filestore | Appears mainly with GKE shared filesystem use cases. |
 
 ---
-
 ## Databases and Datastores
 
 | AWS | GCP | Exam-Relevant Notes |
 |---|---|---|
-| DynamoDB | Firestore | **Critical exam service**. Document-based, strongly consistent, auto-scaling. |
-| Aurora / RDS | Cloud SQL | Relational DB with scaling limits. Often presented as *not ideal*. |
-| Aurora Global | Spanner | **Very important**. Global, strongly consistent relational DB. |
-| ElastiCache | Memorystore | Redis-based caching. Simple mapping. |
+| DynamoDB | Firestore | **Primary application datastore**. Document-based, strongly consistent, auto-scaling, minimal ops. |
+| DynamoDB Global Tables | Firestore (multi-region) | Firestore supports multi-region replication natively. |
+| Aurora / RDS | Cloud SQL | Managed relational DB, but **scaling limits and regional scope are emphasized**. |
+| Aurora Global | Spanner | **Very important**. Global, strongly consistent, horizontally scalable relational DB. |
+| ElastiCache | Memorystore | Redis-based caching. Simple and mostly equivalent. |
+| Redshift | BigQuery | BigQuery is serverless, SQL-first, analytics-oriented. |
+| Neptune | No direct equivalent | Graph use cases are rare; usually a distractor. |
 
-**Exam tip**  
-> High scale + low ops → Firestore  
-> Global transactions → Spanner  
-> Traditional relational needs only → Cloud SQL
+---
+
+### Cloud SQL – Supported Engines (Exam-Relevant)
+
+Cloud SQL supports the following engines:
+
+| Engine | Notes for the Exam |
+|---|---|
+| **PostgreSQL** | Most commonly referenced. Default relational choice. |
+| **MySQL** | Supported and equivalent in exam context. |
+| **SQL Server** | Supported, but appears mostly in migration scenarios. |
+
+**Not supported in Cloud SQL**
+- ❌ Oracle
+- ❌ MariaDB (Cloud SQL used to support it; no longer emphasized)
+
+**Exam takeaway**
+> If Oracle is required → Cloud SQL is *not* the answer  
+> Expect **Postgres** to be the default relational assumption
+
+---
+
+### Firestore (Very High Exam Weight)
+
+**Firestore characteristics**
+- Document-oriented (NoSQL)
+- Strong consistency by default
+- Automatic scaling
+- Multi-region support
+- Very low operational overhead
+
+**Firestore vs DynamoDB (Exam framing)**
+- Firestore emphasizes **simplicity and consistency**
+- Fewer knobs, more opinionated
+- Often the *preferred* answer unless relational constraints are explicit
+
+**Common exam use cases**
+- User profiles
+- Application state
+- Metadata
+- Mobile and web backends
+
+---
+
+### Spanner (High Exam Weight)
+
+**Spanner characteristics**
+- Fully managed relational database
+- Global, multi-region
+- Strong consistency
+- Horizontal scaling
+- ANSI SQL
+
+**Spanner is chosen when**
+- Global transactions are required
+- Strong consistency across regions is required
+- Cloud SQL scaling is insufficient
+
+**Exam takeaway**
+> If the question says *global*, *multi-region*, *strong consistency*, or *planet-scale* → **Spanner**
+
+---
+
+### Cloud SQL (Medium Exam Weight)
+
+**Cloud SQL characteristics**
+- Regional
+- Vertically scalable (limited horizontal options)
+- Requires more operational consideration than Firestore or Spanner
+
+**Typical exam framing**
+- Legacy or migration scenarios
+- Traditional relational schemas
+- When Firestore is *not suitable*
+
+**Exam trap**
+> Cloud SQL is often a **plausible but suboptimal** answer
+
+---
+
+### BigQuery (Analytics, Not OLTP)
+
+**BigQuery characteristics**
+- Serverless
+- Columnar
+- SQL-based
+- Optimized for analytics, not transactions
+
+**Exam takeaway**
+> If the workload is reporting, analytics, or large-scale querying → BigQuery  
+> If it’s OLTP → Firestore, Cloud SQL, or Spanner
+
+---
+
+### Memorystore
+
+**Memorystore characteristics**
+- Managed Redis
+- Used for caching, sessions, ephemeral data
+
+**Exam framing**
+- Straightforward
+- Rarely tricky
+- Usually paired with Cloud Run or GKE
+
+---
+
+## Database Selection Heuristics (Exam-Critical)
+
+Use these rules aggressively:
+
+- **Application data, high scale, low ops** → Firestore
+- **Global relational consistency** → Spanner
+- **Traditional relational, regional** → Cloud SQL (Postgres/MySQL)
+- **Analytics / reporting** → BigQuery
+- **Caching / sessions** → Memorystore
+- **If Oracle is required** → migration scenario, not Cloud SQL
+
+---
+
+## Common AWS → GCP Exam Traps (With Correct Choices)
+
+- **Defaulting to Cloud SQL when Firestore is sufficient**  
+  **Why this is wrong:** Cloud SQL introduces unnecessary operational overhead and scaling limits.  
+  **Correct choice:** **Firestore** for application data, user profiles, metadata, and high-scale workloads.
+
+- **Treating Spanner as “expensive Aurora”**  
+  **Why this is wrong:** Spanner is not a performance tier of Cloud SQL; it is a globally distributed, strongly consistent relational database.  
+  **Correct choice:** **Spanner** when global transactions, multi-region writes, or strong consistency across regions are required.
+
+- **Using BigQuery for transactional workloads**  
+  **Why this is wrong:** BigQuery is optimized for analytics and reporting, not low-latency OLTP.  
+  **Correct choice:**  
+  - **Firestore** for non-relational OLTP  
+  - **Cloud SQL** for regional relational OLTP  
+  - **Spanner** for global relational OLTP
+
+- **Over-valuing schema flexibility over operational simplicity**  
+  **Why this is wrong:** The exam favors managed, opinionated services that reduce operational burden.  
+  **Correct choice:**  
+  - Prefer **Firestore** over Cloud SQL unless relational constraints are explicit  
+  - Prefer **Spanner** over custom sharding or replication strategies
+
+- **Assuming relational databases are the default**  
+  **Why this is wrong:** GCP’s application-first guidance prioritizes NoSQL and globally managed services.  
+  **Correct choice:** Start with **Firestore**, move to **Cloud SQL** only when required, and to **Spanner** when global scale is mandatory.
 
 ---
 
